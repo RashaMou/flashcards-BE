@@ -1,4 +1,4 @@
-const Auth = require("../api/users/users-model");
+const Auth = require("../database/models/users-model");
 
 module.exports = (req, res, next) => {
   const { email, password } = req.body;

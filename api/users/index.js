@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const Users = require("./users-model");
+const Users = require("../../database/models/users-model");
 
+// GET ALL USERS
 /**
  * @api {get} /users Get all users
  * @apiName GetUsers
@@ -12,17 +13,18 @@ const Users = require("./users-model");
  * HTTP/1.1 200 OK
  * [{
  * "id": 1,
+ * "name": "Rasha Moumneh"
  * "email": "rasha@rasha.dev"
  * },
  * {
- * "id": 1,
- * "email": "rasha@fastmail.com"
+ * "id": 2,
+ * "name": "Mara Hughes"
+ * "email": "mara@mara.com"
  * }]
  *
  *
  */
 
-// GET ALL USERS
 router.get("/", async (req, res) => {
   let allUsers = await Users.findUsers();
   try {
@@ -36,6 +38,8 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET USER BY ID
+
 /**
  * @api {get} /users Get user by ID
  * @apiName GetUser
@@ -45,9 +49,16 @@ router.get("/", async (req, res) => {
  *
  * @apiSuccess {Number} id User id
  * @apiSuccess {String} email User email
+ *
+ * @apiSuccessExample Successful Response:
+ * HTTP/1.1 200 OK
+ * {
+ * "id": 1,
+ * "name": "Rasha Moumneh"
+ * "email": "rasha@rasha.dev"
+ * }
  */
 
-// GET USER BY ID
 router.get("/:id", async (req, res) => {
   let user = await Users.findById(req.params.id);
   try {

@@ -137,4 +137,17 @@ router.get("/:id/decks", async (req, res) => {
   }
 });
 
+router.get("/:id/cards", async (req, res) => {
+  const cards = await Users.getUserCards(req.params.id);
+  try {
+    if (cards.length > 0) {
+      res.status(200).json(cards);
+    } else {
+      res.status(404).json("User has no cards");
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving cards" });
+  }
+});
+
 module.exports = router;

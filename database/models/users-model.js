@@ -39,6 +39,16 @@ const getUserDecks = async (id) => {
   return userdecks;
 };
 
+// GET USER'S CARDS
+const getUserCards = async (id) => {
+  const userCards = await db("cards")
+    .select("cards.id", "cards.deck_id", "cards.question", "cards.answer")
+    .join("decks", "decks.id", "cards.deck_id")
+    .where("decks.id", id)
+    .join("users", "users.id", "decks.user_id");
+  return userCards;
+};
+
 module.exports = {
   findUsers,
   findById,
@@ -46,5 +56,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserDecks,
-  // addDeck,
+  getUserCards,
 };

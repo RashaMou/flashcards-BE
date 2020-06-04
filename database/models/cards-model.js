@@ -1,14 +1,13 @@
 const db = require("../../config/db_config");
 
 // GET CARD BY ID
-
 const findById = async (id) => {
   return db("cards").where({ id });
 };
 
 // ADD CARD
-const add = async (user_id, name) => {
-  const [id] = await db("cards").insert({ name, user_id }, "id");
+const add = async (deck_id, name) => {
+  const [id] = await db("cards").insert({ name, deck_id }, "id");
   const newCard = await findById(id);
   return newCard;
 };

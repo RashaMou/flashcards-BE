@@ -6,8 +6,9 @@ const findUsers = () => {
 };
 
 // FIND USER BY ID
-const findById = (id) => {
-  return db("users").where("id", id);
+const findById = async (id) => {
+  const user = await db("users").where("id", id);
+  return user;
 };
 
 // FIND BY {PARAM}
@@ -15,15 +16,13 @@ function findBy(filter) {
   return db("users").where(filter);
 }
 
-// ADD USER
-const addUser = async (user) => {
-  const [id] = await db("users").insert(user, "id");
-  return findById(id);
-};
-
 // UPDATE USER
-const updateUser = (id, post) => {
-  return db("users").where("id", id).update(post);
+const updateUser = async (id, post) => {
+  const response = await db("users").where("id", id).update(post);
+  if (response === 1) {
+    const user = await findById(id);
+    return user;
+  }
 };
 
 // DELETE USER
@@ -31,11 +30,21 @@ const deleteUser = (id) => {
   return db("users").where("id", id).del();
 };
 
+// GET USER'S DECKS
+const getUserDecks = async (id) => {
+  const userdecks = await db("decks")
+    .select("decks.name", "decks.id", "decks.user_id")
+    .join("users", "users.id", "decks.user_id")
+    .where("users.id", id);
+  return userdecks;
+};
+
 module.exports = {
   findUsers,
   findById,
   findBy,
-  addUser,
   updateUser,
   deleteUser,
+  getUserDecks,
+  // addDeck,
 };

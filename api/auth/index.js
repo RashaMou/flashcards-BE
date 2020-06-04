@@ -17,6 +17,7 @@ router.post("/register", validateRegistration, async (req, res) => {
         token: token,
         id: newUser.id,
         email: newUser.email,
+        name: newUser.name,
       });
     }
   } catch (error) {

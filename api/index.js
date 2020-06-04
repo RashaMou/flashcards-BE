@@ -6,7 +6,7 @@ const router = express.Router();
 router.use("/users", require("./users"));
 
 // private routes
-// router.use("/decks", require("./decks"));
+router.use("/decks", require("./decks"));
 // router.use("/cards", require("./cards"));
 
 module.exports = router;

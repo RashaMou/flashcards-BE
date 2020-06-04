@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Users = require("../../database/models/users-model");
+const Decks = require("../../database/models/decks-model");
 
 // GET ALL USERS
 /**
@@ -74,11 +75,15 @@ router.get("/:id", async (req, res) => {
 
 // UPDATE USER
 router.put("/:id", async (req, res) => {
-  const userId = req.params.id;
-  const userChanges = req.body;
+  const userId = await req.params.id;
+  const userChanges = await req.body;
   try {
     const updatedUser = await Users.updateUser(userId, userChanges);
-    res.status(200).json(updatedUser);
+    if (updatedUser) {
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(404);
+    }
   } catch (error) {
     res.status(500).json({ error: "Error updating user" });
   }
@@ -89,9 +94,46 @@ router.delete("/:id", async (req, res) => {
   const userId = req.params.id;
   try {
     const deleting = await Users.deleteUser(userId);
-    res.status(204).json(deleting);
+    res.status(200).json(deleting);
   } catch (error) {
     res.status(500).json({ error: "Error deleting user" });
+  }
+});
+
+// GET ALL USER'S DECKS
+/**
+ * @api {get} /users Get all user's decks
+ * @apiName GetDecks
+ * @apiGroup Decks
+ *
+ * @apiSuccess {Decks[]} decks Array of decks
+ *
+ * @apiSuccessExample Successful Response:
+ * HTTP/1.1 200 OK
+ * [{
+ * "id": 1,
+ * "user_id": 2
+ * "name": "Javascript"
+ * },
+ * {
+ * "id": 2,
+ * "user_id": 2
+ * "name": "Ruby"
+ * }]
+ *
+ *
+ */
+
+router.get("/:id/decks", async (req, res) => {
+  const decks = await Users.getUserDecks(req.params.id);
+  try {
+    if (decks.length > 0) {
+      res.status(200).json(decks);
+    } else {
+      res.status(404).json("User has no decks");
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving decks" });
   }
 });
 

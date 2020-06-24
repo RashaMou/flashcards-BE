@@ -7,7 +7,7 @@ const findUsers = () => {
 
 // FIND USER BY ID
 const findById = async (id) => {
-  const user = await db('users').where('id', id);
+  const [user] = await db('users').where('id', id);
   return user;
 };
 

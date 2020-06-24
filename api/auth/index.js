@@ -5,14 +5,14 @@ const signToken = require('../../helpers/signToken');
 const validateRegistration = require('../../middleware/registration-validation');
 
 // REGISTER USER
-router.post('/register', async (req, res) => {
+router.post('/register', validateRegistration, async (req, res) => {
   const user = req.body;
   const { name, email } = req.body;
   const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
   const token = signToken(user);
-  let newUser = await Users.addUser({ name, email });
   try {
+    const newUser = await Users.addUser({ name, email });
     if (newUser) {
       res.status(201).json({
         token: token,

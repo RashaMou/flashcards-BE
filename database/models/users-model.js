@@ -1,24 +1,31 @@
-const db = require("../../config/db_config");
+const db = require('../../config/db_config');
 
 // GET ALL USERS
 const findUsers = () => {
-  return db("users");
+  return db('users');
 };
 
 // FIND USER BY ID
 const findById = async (id) => {
-  const user = await db("users").where("id", id);
+  const [user] = await db('users').where('id', id);
   return user;
 };
 
 // FIND BY {PARAM}
 function findBy(filter) {
-  return db("users").where(filter);
+  return db('users').where(filter);
 }
+
+// ADD USER
+const addUser = async (user) => {
+  const [id] = await db('users').insert(user).returning('id');
+  const newUser = await findById(id);
+  return newUser;
+};
 
 // UPDATE USER
 const updateUser = async (id, post) => {
-  const response = await db("users").where("id", id).update(post);
+  const response = await db('users').where('id', id).update(post);
   if (response === 1) {
     const user = await findById(id);
     return user;
@@ -27,16 +34,26 @@ const updateUser = async (id, post) => {
 
 // DELETE USER
 const deleteUser = (id) => {
-  return db("users").where("id", id).del();
+  return db('users').where('id', id).del();
 };
 
 // GET USER'S DECKS
 const getUserDecks = async (id) => {
-  const userdecks = await db("decks")
-    .select("decks.name", "decks.id", "decks.user_id")
-    .join("users", "users.id", "decks.user_id")
-    .where("users.id", id);
+  const userdecks = await db('decks')
+    .select('decks.name', 'decks.id', 'decks.user_id')
+    .join('users', 'users.id', 'decks.user_id')
+    .where('users.id', id);
   return userdecks;
+};
+
+// GET USER'S CARDS
+const getUserCards = async (id) => {
+  const userCards = await db('cards')
+    .select('cards.id', 'cards.deck_id', 'cards.question', 'cards.answer')
+    .join('decks', 'decks.id', 'cards.deck_id')
+    .where('decks.id', id)
+    .join('users', 'users.id', 'decks.user_id');
+  return userCards;
 };
 
 module.exports = {
@@ -46,5 +63,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserDecks,
-  // addDeck,
+  getUserCards,
+  addUser,
 };

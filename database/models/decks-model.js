@@ -28,9 +28,19 @@ const remove = async (id) => {
   return deleted;
 };
 
+// GET DECK'S CARDS
+const getDeckCards = async (id) => {
+  const deckCards = await db("cards")
+    .select("cards.id", "cards.deck_id", "cards.question", "cards.answer")
+    .join("decks", "decks.id", "cards.deck_id")
+    .where("decks.id", id);
+  return deckCards;
+};
+
 module.exports = {
   add,
   remove,
   findById,
   update,
+  getDeckCards,
 };
